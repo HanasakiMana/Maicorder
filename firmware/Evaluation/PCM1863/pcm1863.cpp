@@ -9,11 +9,6 @@
 #include <Arduino.h>
 
 void PCM1863::i2cInit() {
-    i2c_init(i2c0, this->i2cClk);
-    gpio_set_function(this->SDA, GPIO_FUNC_I2C);
-    gpio_set_function(this->SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(this->SDA);
-    gpio_pull_up(this->SCL);
     delay(100);
     // set to page 0
     this->i2cWrite(0x00, 0x00);
@@ -45,11 +40,13 @@ void PCM1863::i2cInit() {
     // Limit of Auto Clipping Suppression (D4-D3)
     // trigger auto clipping suppression after CLIP_NUMs of clipping events (D2-D1)
     // enable auto clipping suppression (D0=1) 
-    this->i2cWrite(0x05, 0b111 << 5 | this->autoClippingLimit << 3 | this->clippingEventNum << 1 | 1);
+    this->i2cWrite(0x05, 0b11100111);
     // P0_R11: set PCM format
     // Stereo PCM Word Length 16-bit (D3-2=0b11), I2S format (D1-D0=0b00)
     // keep other bits as default
     this->i2cWrite(0x0B, 0b01001100);
+
+    this->i2cWrite(0x60, 0x10);
     
     // set PGA gain
     this->setPgaGain(PGA_GAIN_DEFAULT);
@@ -59,6 +56,13 @@ int PCM1863::i2cWrite(uint8_t reg, uint8_t data) {
     uint8_t buf[2] = {reg, data};
     int result = i2c_write_timeout_us(i2c0, this->i2cAddr, buf, 2, false, 500000);
     if (result<0) beep(100);
+    return result;
+}
+
+uint8_t PCM1863::i2cRead(uint8_t reg) {
+    i2c_write_timeout_us(i2c0, this->i2cAddr, &reg, 1, false, 500000);
+    uint8_t result;
+    i2c_read_timeout_us(i2c0, this->i2cAddr, &result, 1, false, 50000);
     return result;
 }
 
@@ -74,7 +78,6 @@ void PCM1863::init() {
     this->i2sInit();
     // init i2c device
     delay(100); // wait for device to be ready
-    this->i2cInit();
 
 }
 
@@ -99,3 +102,8 @@ void PCM1863::updateBuffer(uint8_t* buffer, size_t size) {
     }
 }
 
+
+float AGC::rms2dbfs(q15_t rms) {
+    if (rms == 0) return -96.0;
+    return 20.0f * log10f((float)rms/RMS_0DBFS_Q15);
+}

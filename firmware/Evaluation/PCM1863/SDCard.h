@@ -5,12 +5,6 @@
 
 class SDCard {
     public:
-        // pin definitions
-        pin_size_t MISO = SD_MISO;
-        pin_size_t MOSI = SD_MOSI;
-        pin_size_t SCK = SD_SCK;
-        pin_size_t CS = SD_CS;
-        pin_size_t CD = SD_CD;
         // buffer settings
         unsigned long audioTransmitThreshold = AUDIO_TRANSMIT_THRESHOLD;
         unsigned int flushSegment = SD_FLUSH_SEGMENT;

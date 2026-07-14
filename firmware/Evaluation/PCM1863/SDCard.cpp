@@ -2,29 +2,33 @@
 #include "config.h"
 #include "pinDef.h"
 
+
 #include <SPI.h>
 #include <SDFS.h>
 #include <cmath>
 
 void SDCard::spiInit() {
-    SPI1.setRX(this->MISO);
+    /*SPI1.setRX(this->MISO);
     SPI1.setTX(this->MOSI);
     SPI1.setSCK(this->SCK);
-    SPI1.setCS(this->CS);
+    SPI1.setCS(this->CS);*/
 }
 
 bool SDCard::isInserted() {
-    return digitalRead(this->CD) == LOW;
+    return !digitalRead(SD_CD);
 }
 
 void SDCard::init() {
-    pinMode(this->CD, INPUT);
-    this->spiInit();
+    pinMode(SD_CD, INPUT);
+    // this->spiInit();
 }
 
 bool SDCard::begin() {
     if (this->isInserted()) {
-        SDFS.setConfig(SDFSConfig(this->CS, SD_SCK_MHZ(50), SPI1));
+        SDFSConfig conf = SDFSConfig(SD_CLK, SD_CMD, SD_D0);
+        conf.setSPISpeed(SD_SCK_MHZ(25));
+        SDFS.setConfig(conf);
+        // SDFS.setConfig(SDFSConfig(this->CS, SD_SCK_MHZ(25), SPI1));
         return SDFS.begin();
     }
     return false;

@@ -1,30 +1,41 @@
+// I2C0
+#define I2C0_SDA 28
+#define I2C0_SCL 29
+
+
 // PCM1863
-#define PCM1863_SDA 0
-#define PCM1863_SCL 1
-#define I2S_DIN 4
-#define I2S_DOUT 5
-#define I2S_BCLK 6 // LRCLK = 7 by default
+#define I2S_DIN 19
+// #define I2S_DOUT 5
+#define I2S_BCLK 20 // LRCLK = 21 by default
 #define I2S_MCLK 8
 
-// RGB LED
-#define LED_G 2
-#define LED_R 3
-#define LED_B 5
+// Gain switch
+#define SEL1 10
+#define SEL2 11
+#define SEL3 12
+#define SEL4 13
 
-// Buttons
-#define BTN_L 9
-#define BTN_R 10
+// RGB LED
+#define LED_G 16
+#define LED_R 18
+#define LED_B 17
+
 
 // microSD Card
-#define SD_CS 29
-#define SD_MOSI 27
-#define SD_MISO 24
-#define SD_SCK 26
-#define SD_CD 25
+#define SD_CLK 3
+#define SD_CMD 9
+#define SD_D0  5 // D1~D3 = 6~8
+#define SD_CD  2
 
-// Battery ADC
-#define BATTERY_ADC 28
-#define BATTERY_ADC_EN 16
+// Battery
+#define BATTERY_CHRG 0
+#define BATTERY_FULL 1
+#define BATTERY_ADC 27
+#define BATTERY_ADC_EN 25
+#define VBUS_DETECT 26
+
+// Analog LDO
+#define ALDO_EN 14
 
 // Buzzer
-#define BUZZER 17
+// #define BUZZER 17

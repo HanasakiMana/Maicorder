@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 void beep(int consTime) {
-  tone(BUZZER, 1000);
+  /*tone(BUZZER, 1000);
   delay(consTime);
-  noTone(BUZZER);
+  noTone(BUZZER);*/
 }

@@ -2,16 +2,34 @@
 #include <Arduino.h>
 
 void Battery::init() {
-    pinMode(this->adcEn, OUTPUT);
-    digitalWrite(this->adcEn, LOW);
+    pinMode(VBUS_DETECT, INPUT_PULLDOWN);
+    pinMode(BATTERY_ADC_EN, OUTPUT);
+    pinMode(BATTERY_CHRG, INPUT_PULLUP);
+    pinMode(BATTERY_FULL, INPUT_PULLUP);
+    digitalWrite(BATTERY_ADC_EN, LOW);
     analogReadResolution(12); // 12-bit resolution
 }
 
 float Battery::readVoltage() {
-    digitalWrite(this->adcEn, HIGH);
+    digitalWrite(BATTERY_ADC_EN, HIGH);
     delay(10); // wait for ADC to stabilize
     // voltage divider = 2/3, Vref = 3.3V
-    float voltage = ((float)analogRead(this->adc))/4095*3.3*3/2;
-    digitalWrite(this->adcEn, LOW);
+    float voltage = ((float)analogRead(BATTERY_ADC))/4095*3.3*3/2;
+    digitalWrite(BATTERY_ADC_EN, LOW);
     return voltage;
+}
+
+bool Battery::isCharging() {
+    if (!digitalRead(BATTERY_CHRG)) return true;
+    else return false;
+}
+
+bool Battery::isFull() {
+    if (!digitalRead(BATTERY_FULL)) return true;
+    else return false;
+}
+
+bool Battery::isVBusConnected() {
+    if (digitalRead(VBUS_DETECT)) return true;
+    else return false;
 }
